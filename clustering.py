@@ -393,71 +393,10 @@ _ = sns.scatterplot(
 #
 # Now, we are going to have a look to a couple of applications of clustering.
 #
-# ### Image compression
-#
-# Let's load an sample image available in scikit-learn.
-
-# %%
-from sklearn.datasets import load_sample_image
-
-china = load_sample_image("china.jpg")
-china = china / china.max()
-china.shape
-
-# %% [markdown]
-#
-# We see that this is a 3-dimensional array. The first two dimensions correspond to the
-# height and width of the image. The last dimension corresponds to the color channels
-# (red, green, blue).
-
-# %%
-plt.imshow(china)
-plt.axis("off")
-print(f"Potential number of colors: {256 **3:,} colors")
-print(
-    f"Actual number of colors: {len(np.unique(china.reshape(-1, 3), axis=0)):,} colors"
-)
-
-# %% [markdown]
-#
-# We see that the image has a lot of colors. Indeed, we might not need so many colors to
-# represent the image. We can use clustering to reduce the number of colors. It will
-# group pixels of similar colors together. We will use the k-means algorithm to do so.
-#
-# *Using k-means, cluster the color of the image by using 64 colors.* Hint: remember
-# that you need to reshape the image such that each pixel is a sample and the features
-# are the color channels.
-
-# %%
-n_colors = 64
-kmeans = KMeans(n_clusters=n_colors, n_init=1)
-kmeans.fit(china.reshape(-1, 3))
-
-# %% [markdown]
-#
-# *First get an image that contains the labels resulting from the clustering. Plot this
-# image.* Hint: you can use the `predict` method of `KMeans` estimator that you fitted
-# previously.
-
-# %%
-fake_image = kmeans.predict(china.reshape(-1, 3))
-plt.imshow(fake_image.reshape(china.shape[:2]))
-_ = plt.axis("off")
-
-# %% [markdown]
-# *Then, replcae each label by the centroid of the cluster. Plot the resulting image.*
-# Hint: you can access the centroids using `kmeans.cluster_centers_`.
-
-# %%
-plt.imshow(kmeans.cluster_centers_[fake_image].reshape(china.shape))
-_ = plt.axis("off")
-
-# %% [markdown]
-#
 # ### Semi-supervised learning
 #
 # In this section, we see how to use clustering to perform semi-supervised learning.
-# Here, we want to use a supervised preditive model but we do not have enough labeled
+# Here, we want to use a supervised predictive model but we do not have enough labeled
 # data. We will use clustering to help us at having more data.
 #
 # We will use the digits dataset.
@@ -518,7 +457,7 @@ kmeans = KMeans(n_clusters=n_clusters, n_init=1).fit(X_train)
 
 # %% [markdown]
 #
-# *Use `KMeans.transform` to get the distance of each sampe to each cluster. Then,
+# *Use `KMeans.transform` to get the distance of each sample to each cluster. Then,
 # find the closest sample to each cluster and select it as a prototype.*
 
 # %%
@@ -589,3 +528,5 @@ results = pd.DataFrame(
     }
 ).plot.box(whis=100)
 _ = plt.title("Accuracy of the model with and without clustering as preprocessing")
+
+# %%
